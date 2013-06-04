@@ -1,16 +1,52 @@
+/*
+Main Guidelines for Functions parameters.
+
+content:
+Refers to html or text contents which can be passed into the functions.
+
+className:
+The "class" name of the element we’re targeting.
+
+tag:
+HTML tag type of the element we’re targeting with a class.
+This parameter has to be set in case different HTML tags are using the same class. If passed blank all elements with
+the same class will be targeted.
+
+elementId:
+The "ID" of the element we’re targeting.
+
+Position:
+0: Adds content to the end of the Block
+1: Adds content to the Top of the Block
+
+contentTag:
+Declares the ID for the new HTML tag we want to add
+
+contentID:
+Identifies the ID for the target element
+
+newID:
+For all functions were we can pass criteria’s, this parameter defines which Query String parameter in the URL we’re
+targeting.
+*/
+
 var ContentManagement = {
+    // returns true is the string is blank
     isBlank: function(str)
     {
         return (!str || /^s*$/.test(str));
     },
+    // returns true is the string is empty
     isEmpty: function(str)
     {
         return (!str || 0 === str.length);
     },
+    //return true is a string is either empty or blank
     hasValue: function(str)
     {
         return (!this.isBlank(str) && !this.isEmpty(str));
     },
+    // returns a list of elements with the matching class for a specific tag
     getElementsByClass: function(className, tag)
     {
         if (!this.hasValue(tag)) tag = '*';
@@ -28,6 +64,7 @@ var ContentManagement = {
         }
         return results;
     },
+    //Change the content of all tags with have matching class
     changeHtmlContentByClass: function(content, className, tag)
     {
         var results = [];
@@ -37,6 +74,7 @@ var ContentManagement = {
             results[i].innerHTML = content;
         }
     },
+    //Change the content of the first element with the specified id
     changeHtmlContentByID: function(content, elementId)
     {
         var element = document.getElementById(elementId);
@@ -45,6 +83,7 @@ var ContentManagement = {
             element.innerHTML = content;
         }
     },
+    //Add content to a list of matching elements by Class name
     addHtmlContentByClass: function(content, className, tag, position)
     {
         var results = [];
@@ -61,6 +100,7 @@ var ContentManagement = {
             }
         }
     },
+    //Appends content to the first element with the specified class
     appendHtmlContentByClass: function(content, className, tag, contentTag, contentID)
     {
         var results = [];
@@ -85,6 +125,7 @@ var ContentManagement = {
             }
         }
     },
+    //Add content to the first element with the specified id
     addHtmlContentByID: function(content, elementId, position)
     {
         var element = document.getElementById(elementId);
@@ -99,6 +140,7 @@ var ContentManagement = {
             }
         }
     },
+    //Appends content to the first element with the specified id
     appendHTMLContentByID: function(content, elementId, contentTag, contentID)
     {
         var element = document.getElementById(elementId);
@@ -118,6 +160,9 @@ var ContentManagement = {
             newTag.innerHTML = content;
         }
     },
+    //Add content to a list of matching elements by Class name, only if a specific field-value pair is passed in the query string
+    //Criteria:Criteria is the paramenter name.
+    //Value:Parameter Value
     addHtmlContentByCriteriaByClass: function(content, className, tag, position, criteria, value)
     {
         if (this.ParameterByName(criteria) == value)
@@ -125,6 +170,9 @@ var ContentManagement = {
             this.addHtmlContentByClass(content, className, tag, position);
         }
     },
+    //Add content to a matching elements by id, only if a specific field-value pair is passed in the query string
+    //Criteria:Criteria is the paramenter name.
+    //Value:Parameter Value
     addHtmlContentByCriteriaByID: function(content, elementId, position, criteria, value)
     {
         if (this.ParameterByName(criteria) == value)
@@ -132,6 +180,7 @@ var ContentManagement = {
             this.addHtmlContentByID(content, elementId, position);
         }
     },
+    //move the content from one element into a different element
     moveHtmlContentByID: function(elementId, newId)
     {
         var element = document.getElementById(elementId);
@@ -142,6 +191,7 @@ var ContentManagement = {
             this.removeElementByID(elementId);
         }
     },
+    //Remove a List of elements with a matching class
     removeElementByClass: function(className, tag)
     {
         var results = [];
@@ -153,6 +203,13 @@ var ContentManagement = {
             element.parentNode.removeChild(element);
         }
     },
+    //Remove an elements with a matching id
+    removeElementByID: function(elementId)
+    {
+        var element;
+        return (element = document.getElementById(elementId)) ? element.parentNode.removeChild(element) : false;
+    },
+    //Return the content of an elements with a matching id
     getContentByID: function(elementId)
     {
         var element = document.getElementById(elementId);
@@ -162,6 +219,7 @@ var ContentManagement = {
         }
         return '';
     },
+    //Return the content of first matching element by Class name
     getContentByClass: function(className, tag)
     {
         var results = [];
@@ -176,12 +234,7 @@ var ContentManagement = {
         }
         return '';
     },
-
-    removeElementByID: function(elementId)
-    {
-        var element;
-        return (element = document.getElementById(elementId)) ? element.parentNode.removeChild(element) : false;
-    },
+    //Clear the content of first matching element by Class name
     clearContentByClass: function(className, tag)
     {
         var results = [];
@@ -196,6 +249,7 @@ var ContentManagement = {
             }
         }
     },
+    //Clear the content of matching element by id
     clearContentById: function(elementId)
     {
         var element = document.getElementById(elementId);
@@ -204,6 +258,7 @@ var ContentManagement = {
             element.removeChild(element.lastChild);
         }
     },
+    //Add content to the parent of first matching element by Class name
     addHTMLContentToParentByClass: function(content, className, tag, contentID, contentTag)
     {
         var results = [];
@@ -226,6 +281,7 @@ var ContentManagement = {
             }
         }
     },
+    //Add content to the parent of the first element with the specified id
     addHTMLContentToParentByID: function(content, contentID, elementId, contentTag)
     {
         var element = document.getElementById(elementId);
@@ -242,6 +298,7 @@ var ContentManagement = {
             newTag.innerHTML = content;
         }
     },
+    //Change image source for all matching element by Class name
     changeImageByClass: function(path, className)
     {
         var results = this.getElementsByClass(className, 'img');
@@ -250,6 +307,7 @@ var ContentManagement = {
             results[i].src = path;
         }
     },
+    //Change image source of the first element with the specified id
     changeImageByID: function(path, elementId)
     {
         var element = document.getElementById(elementId);
@@ -258,6 +316,7 @@ var ContentManagement = {
             element.src = path;
         }
     },
+    //Change image source based on the current image path
     changeImageByPath: function(oldPath, newPath)
     {
         var allImages = document.getElementsByTagName('img');
@@ -274,6 +333,7 @@ var ContentManagement = {
             }
         }
     },
+    //Change link href for all matching element by Class name
     changeHrefByClass: function(path, className)
     {
         var results = this.getElementsByClass(className, 'a');
@@ -282,6 +342,7 @@ var ContentManagement = {
             results[i].href = path;
         }
     },
+    //Change link href of the first element with the specified id
     changeHrefByID: function(path, elementId)
     {
         var element = document.getElementById(elementId);
@@ -290,6 +351,7 @@ var ContentManagement = {
             element.href = path;
         }
     },
+    //Change link href based on the current link url
     changeHrefByPath: function(oldPath, newPath)
     {
         var allAtags = document.getElementsByTagName('a');
@@ -307,7 +369,7 @@ var ContentManagement = {
             element.href = newPath;
         }
     },
-
+    //Add external script and css files to document
     loadjscssfile: function(filename, filetype, where)
     {
         var fileref;
@@ -318,7 +380,6 @@ var ContentManagement = {
             fileref.setAttribute("src", filename);
         }
         else if (filetype == "css")
-
         {
             fileref = document.createElement("link");
             fileref.setAttribute("rel", "stylesheet");
@@ -336,8 +397,8 @@ var ContentManagement = {
                 document.getElementsByTagName("body")[0].appendChild(fileref);
             }
         }
-
     },
+    //Add inline css to all matching element by Class name
     changeCssByClass: function(property, value, className, tag)
     {
         var results = [];
@@ -348,6 +409,7 @@ var ContentManagement = {
             results[i].setAttribute("style", st);
         }
     },
+    //Add inline css to the first element with the specified id
     changeCssByID: function(property, value, elementId)
     {
         var element = document.getElementById(elementId);
@@ -357,6 +419,7 @@ var ContentManagement = {
             element.setAttribute("style", st);
         }
     },
+    //icon object
     icon: function(o) {
         o.id = (typeof o.id == 'undefined') ? '': o.id;
         o.title = (typeof o.title == 'undefined') ? '': o.title;
@@ -365,6 +428,8 @@ var ContentManagement = {
         o.target = (typeof o.target == 'undefined') ? '_blank': o.target;
         return o;
     },
+    //Add a list of icons to the first element with the specified id
+    //icons: an array of icon abjects
     addCustomIconsByID: function(elementId, icons)
     {
         var content = '';
@@ -383,6 +448,8 @@ var ContentManagement = {
             newdiv.innerHTML = content;
         }
     },
+    //Add a list of icons to the first matching element by Class name
+    //icons: an array of icon abjects
     addCustomIconsByClass: function(className, tag, icons)
     {
         var content = '';
@@ -409,6 +476,8 @@ var ContentManagement = {
             }
         }
     },
+    //create a banner rotator which will be added to the first matching element by Class name
+    //icons: an array of icon abjects
     AddRotatingIconByClass: function(className, tag, icons, width, height, time)
     {
         var content = '';
@@ -434,10 +503,8 @@ var ContentManagement = {
             styles += '#rotatingIcon img{position:absolute;left:0;top:0;border:0;cursor:pointer;}';
             css.appendChild(document.createTextNode(styles));
             document.getElementsByTagName("head")[0].appendChild(css);
-
             var newdiv = document.createElement('div');
             newdiv.setAttribute('id', 'rotatingIcon');
-
             results = this.getElementsByClass(className, tag);
             if (results.length > 0)
             {
@@ -449,6 +516,8 @@ var ContentManagement = {
             }
         }
     },
+    //create a banner rotator which will be added to the first matching element by id
+    //icons: an array of icon abjects
     AddRotatingIconById: function(elementId, icons, width, height, time)
     {
         var content = '';
@@ -474,7 +543,6 @@ var ContentManagement = {
             styles += '#rotatingIcon img { position:absolute;left:0;top:0;border:0; cursor:pointer;}';
             css.appendChild(document.createTextNode(styles));
             document.getElementsByTagName("head")[0].appendChild(css);
-
             var newdiv = document.createElement('div');
             newdiv.setAttribute('id', 'rotatingIcon');
             var element = document.getElementById(elementId);
@@ -499,7 +567,7 @@ var ContentManagement = {
         },
         time);
     },
-    // --------- Get QueryString parameters
+    //If parameter found in QueryString the value will be returned
     ParameterByName: function(name)
     {
         name = name.replace(/[[]/, "[").replace(/[]]/, "]");
@@ -512,7 +580,7 @@ var ContentManagement = {
         return decodeURIComponent(results[1].replace(/+/g, " "));
     },
 
-    // ---------Cookie Functions
+    //Cookie Functions
     secondsInMilliseconds: function(numseconds)
     {
         return numseconds * 1000;
@@ -529,6 +597,7 @@ var ContentManagement = {
     {
         return this.hoursInMilliseconds(numdays * 24);
     },
+    // Create Cookie
     createCookie: function(name, value, minutes, days)
     {
         var expiremilliseconds = 0;
@@ -544,6 +613,7 @@ var ContentManagement = {
         var expirationdate = new Date(currdate.getTime() + expiremilliseconds);
         document.cookie = name + "=" + value + "; expires=" + expirationdate.toGMTString() + "; path=/";
     },
+    //Read Cookie
     readCookie: function(name)
     {
         var nameEQ = name + "=";
