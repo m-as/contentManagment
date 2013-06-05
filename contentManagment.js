@@ -488,11 +488,11 @@ var ContentManagement = {
             content += '<img id="' + ic.id + '" alt="' + ic.title + '" title="' + ic.title + '" src="' + ic.image + '"';
             if (ic.target == '_blank')
             {
-                content += ' onclick="window.open('' + ic.href + '')" >';
+                content += ' onclick="window.open(' + ic.href + ')">';
             }
             else
             {
-                content += ' onclick="location.href='' + ic.href + ''" >';
+                content += ' onclick="location.href=' + ic.href + '">';
             }
         }
         if (content > '')
@@ -505,6 +505,7 @@ var ContentManagement = {
             document.getElementsByTagName("head")[0].appendChild(css);
             var newdiv = document.createElement('div');
             newdiv.setAttribute('id', 'rotatingIcon');
+            var results = [];
             results = this.getElementsByClass(className, tag);
             if (results.length > 0)
             {
@@ -528,11 +529,11 @@ var ContentManagement = {
             content += '<img id="' + ic.id + '" alt="' + ic.title + '" title="' + ic.title + '" src="' + ic.image + '"';
             if (ic.target == '_blank')
             {
-                content += ' onclick="window.open('' + ic.href + '')" >';
+                content += ' onclick="window.open(' + ic.href + ')">';
             }
             else
             {
-                content += ' onclick="location.href='' + ic.href + ''" >';
+                content += ' onclick="location.href=' + ic.href + '">';
             }
         }
         if (content > '')
@@ -570,14 +571,14 @@ var ContentManagement = {
     //If parameter found in QueryString the value will be returned
     ParameterByName: function(name)
     {
-        name = name.replace(/[[]/, "[").replace(/[]]/, "]");
-        var regexS = "[?&]" + name + "=([^&#]*)";
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    	var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
         var results = regex.exec(window.location.search);
         if (results === null)
-        return "";
+        	return "";
         else
-        return decodeURIComponent(results[1].replace(/+/g, " "));
+        	return decodeURIComponent(results[1].replace(/\+/g, " "));
     },
 
     //Cookie Functions
